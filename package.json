@@ -1,7 +1,7 @@
 {
-  "name": "youchess-api",
+  "name": "library-api",
   "version": "1.0.0",
-  "description": "This is YouChess API",
+  "description": "API for managing a library",
   "main": "index.js",
   "scripts": {
 	"prestart": "npm install",
