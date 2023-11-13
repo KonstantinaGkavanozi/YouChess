@@ -13,6 +13,8 @@ servers:
   description: SwaggerHub API Auto Mocking
 - url: https://localhost:8080
   description: localhost API
+- url: https://youchess-production.up.railway.app:8080
+  description: railway API
 tags:
 - name: group
   description: Endpoints related to chess groups
