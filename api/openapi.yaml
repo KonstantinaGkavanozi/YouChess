@@ -1,295 +1,563 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
-  title: Library API
-  description: API for managing a library
+  title: YouChess API
+  description: This is YouChess API
+  contact:
+    email: papadaka@ece.auth.gr
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
-- url: /
+- url: https://virtserver.swaggerhub.com/TSAISIDOROS/SySkaki/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: https://localhost:8080
+  description: localhost API
+tags:
+- name: group
+  description: Endpoints related to chess groups
+- name: coach
+  description: Endpoints related to coaches
+- name: student
+  description: Endpoints related to students
+- name: classroom
+  description: Endpoints related to classrooms
 paths:
-  /books:
-    get:
-      summary: Get a list of books
-      operationId: booksGET
-      responses:
-        "200":
-          description: A list of books
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Book'
-                x-content-type: application/json
-      x-swagger-router-controller: Default
+  /group:
     post:
-      summary: Add a new book
-      operationId: booksPOST
+      tags:
+      - group
+      summary: Create a new group
+      operationId: createGroup
       requestBody:
+        description: FR1-The coach must be able to create groups
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Book'
+              $ref: '#/components/schemas/GroupIn'
         required: true
       responses:
-        "201":
-          description: Book successfully added
-      x-swagger-router-controller: Default
-  /books/{bookId}:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupOut'
+        "405":
+          description: Invalid input
+      x-swagger-router-controller: Group
+  /group/{groupID}:
     get:
-      summary: Get details of a book
-      operationId: booksBookIdGET
+      tags:
+      - group
+      summary: Get group by ID
+      description: FR6 - The user must be able to see the groups they are in
+      operationId: getGroup
       parameters:
-      - name: bookId
+      - name: groupID
         in: path
+        description: Group ID to get
         required: true
         style: simple
         explode: false
         schema:
           type: integer
+          format: int64
       responses:
         "200":
-          description: Detailed information about a book
+          description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Book'
-      x-swagger-router-controller: Default
+                $ref: '#/components/schemas/GroupOut'
+        "400":
+          description: Invalid group ID
+      x-swagger-router-controller: Group
     delete:
-      summary: Delete a book
-      operationId: booksBookIdDELETE
+      tags:
+      - group
+      summary: Delete a group
+      description: FR2 - The coach must be able to delete groups
+      operationId: deleteGroup
       parameters:
-      - name: bookId
+      - name: groupID
         in: path
+        description: Group ID to delete
         required: true
         style: simple
         explode: false
         schema:
           type: integer
-      responses:
-        "204":
-          description: Book successfully deleted
-      x-swagger-router-controller: Default
-  /users:
-    get:
-      summary: Get a list of users
-      operationId: usersGET
+          format: int64
       responses:
         "200":
-          description: A list of users
+          description: Successful operation
+        "400":
+          description: Invalid group ID
+      x-swagger-router-controller: Group
+  /groups/enroll:
+    post:
+      tags:
+      - group
+      summary: Enroll a student in a group
+      description: FR5 - The student must be able to enroll in an available group
+      operationId: enrollStudent
+      requestBody:
+        description: JSON object with the studentID and groupID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/groups_enroll_body'
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/groups_enroll_body'
+        "400":
+          description: Could not enroll student
+      x-swagger-router-controller: Group
+  /groups/unenroll:
+    post:
+      tags:
+      - group
+      summary: Unenroll a student from a group
+      description: FR7 - The student must be able to leave a group
+      operationId: unenrollStudent
+      requestBody:
+        description: JSON object with the studentID and groupID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/groups_unenroll_body'
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupOut'
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Group not found
+        "405":
+          description: Validation exception
+      x-swagger-router-controller: Group
+  /group/findAvailable:
+    get:
+      tags:
+      - group
+      summary: Find available groups
+      description: "FR3,FR4 - The student must be able to see a list of available\
+        \ groups, and filter them by their attributes"
+      operationId: findAvailableGroups
+      parameters:
+      - name: price_min
+        in: query
+        description: Min price value that needs to be considered for filtering
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+          example: 4
+      - name: price_max
+        in: query
+        description: Max price value that needs to be considered for filtering
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+          example: 18
+      - name: level
+        in: query
+        description: Level that needs to be considered for filtering
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - Beginner
+          - Intermediate
+          - Advanced
+      - name: sortBy
+        in: query
+        description: Sorting method that needs to be considered for filtering
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - price(asc.)
+          - price(desc.)
+          - availableSeats(desc.)
+      responses:
+        "200":
+          description: Successful operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
+                  $ref: '#/components/schemas/GroupOut'
                 x-content-type: application/json
-      x-swagger-router-controller: Default
-    post:
-      summary: Create a new user
-      operationId: usersPOST
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-        required: true
-      responses:
-        "201":
-          description: User successfully created
-      x-swagger-router-controller: Default
-  /users/{userId}:
+        "400":
+          description: Invalid filters
+      x-swagger-router-controller: Group
+  /coach/{coachID}:
     get:
-      summary: Get details of a user
-      operationId: usersUserIdGET
+      tags:
+      - coach
+      summary: Get coach by ID
+      operationId: getCoach
       parameters:
-      - name: userId
+      - name: coachID
         in: path
+        description: Coach ID to get
         required: true
         style: simple
         explode: false
         schema:
           type: integer
+          format: int64
       responses:
         "200":
-          description: Detailed information about a user
+          description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-      x-swagger-router-controller: Default
+                $ref: '#/components/schemas/Coach'
+        "400":
+          description: Invalid coach ID
+      x-swagger-router-controller: Coach
+  /coach:
+    post:
+      tags:
+      - coach
+      summary: Create a new coach given their name
+      operationId: postCoach
+      requestBody:
+        description: JSON object with the studentID and groupID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/coach_body'
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coach'
+        "400":
+          description: Invalid coach ID
+      x-swagger-router-controller: Coach
+  /student/{studentID}:
+    get:
+      tags:
+      - student
+      summary: Get student by ID
+      operationId: getStudent
+      parameters:
+      - name: studentID
+        in: path
+        description: Student ID to get
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        "400":
+          description: Invalid student ID
+      x-swagger-router-controller: Student
+  /group/{groupID}/classroom/:
+    get:
+      tags:
+      - classroom
+      summary: Get classroom by ID
+      description: FR8 - The group participants must be able to join the classroom
+      operationId: getClassroom
+      parameters:
+      - name: groupID
+        in: path
+        description: Classroom ID to get
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classroom'
+        "400":
+          description: Invalid classroom ID
+      x-swagger-router-controller: Classroom
     put:
-      summary: Update user details
-      operationId: usersUserIdPUT
+      tags:
+      - classroom
+      summary: Update the classroom
+      description: FR12 - The coach must be able to change who has the permission
+        to edit the chessboard
+      operationId: updateClassroom
       parameters:
-      - name: userId
+      - name: groupID
         in: path
         required: true
         style: simple
         explode: false
         schema:
           type: integer
+          format: int64
       requestBody:
+        description: Classroom object with the updated user list and/or editing permission
+          owner
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserUpdate'
+              $ref: '#/components/schemas/Classroom'
         required: true
       responses:
         "200":
-          description: User successfully updated
-      x-swagger-router-controller: Default
-    delete:
-      summary: Delete a user
-      operationId: usersUserIdDELETE
-      parameters:
-      - name: userId
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      responses:
-        "204":
-          description: User successfully deleted
-      x-swagger-router-controller: Default
-  /users/{userId}/borrowings:
-    get:
-      summary: Get a list of borrowed books by a user
-      operationId: usersUserIdBorrowingsGET
-      parameters:
-      - name: userId
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      responses:
-        "200":
-          description: A list of borrowed books
+          description: Successful operation
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Borrowing'
-                x-content-type: application/json
-      x-swagger-router-controller: Default
-  /books/{bookId}/borrow:
+                $ref: '#/components/schemas/Classroom'
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Classroom not found
+        "405":
+          description: Validation exception
+      x-swagger-router-controller: Classroom
+  /group/{groupID}/classroom/setEditor:
     post:
-      summary: Borrow a book
-      operationId: booksBookIdBorrowPOST
+      tags:
+      - classroom
+      summary: Update studentID of the student who is allowed to edit the chessboard
+      description: FR10 - The coach must be able to change the ID of the student in
+        controll of the Chessboard
+      operationId: groupGroupIDClassroomSetEditorPOST
       parameters:
-      - name: bookId
+      - name: groupID
         in: path
+        description: Classroom ID for the chessboard
         required: true
         style: simple
         explode: false
         schema:
           type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BorrowRequest'
+          format: int64
+      - name: userID
+        in: query
+        description: userID of the user who is allowed to edit the chessboard
         required: true
-      responses:
-        "200":
-          description: Book successfully borrowed
-        "400":
-          description: "Bad request, book not available or user invalid"
-      x-swagger-router-controller: Default
-  /books/{bookId}/return:
-    post:
-      summary: Return a borrowed book
-      operationId: booksBookIdReturnPOST
-      parameters:
-      - name: bookId
-        in: path
-        required: true
-        style: simple
-        explode: false
+        style: form
+        explode: true
         schema:
           type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ReturnRequest'
-        required: true
+          format: int64
       responses:
         "200":
-          description: Book successfully returned
+          description: Successful operation
         "400":
-          description: "Bad request, return not possible"
-      x-swagger-router-controller: Default
+          description: Invalid Classroom ID or New Student ID
+      x-swagger-router-controller: Classroom
 components:
   schemas:
-    Book:
+    GroupIn:
       type: object
       properties:
-        id:
+        coachID:
           type: integer
-        title:
+          format: int64
+          example: 8765
+        level:
           type: string
-        author:
+          example: Intermediate
+          enum:
+          - Beginner
+          - Intermediate
+          - Advanced
+        price:
+          type: number
+          format: double
+          example: 10.5
+        availableSeats:
+          type: integer
+          format: int32
+          example: 5
+        schedule:
           type: string
-        isbn:
+          example: 5 O'clock every Monday
+    GroupOut:
+      type: object
+      properties:
+        ID:
+          type: integer
+          format: int64
+          example: 10
+        studentIDs:
+          type: array
+          example:
+          - 198772
+          - 32224
+          - 44221
+          items:
+            type: integer
+            format: int64
+        coachID:
+          type: integer
+          format: int64
+          example: 8765
+        level:
           type: string
-        available:
-          type: boolean
+          example: Intermediate
+          enum:
+          - Beginner
+          - Intermediate
+          - Advanced
+        price:
+          type: number
+          format: double
+          example: 10.5
+        availableSeats:
+          type: integer
+          format: int32
+          example: 5
+        schedule:
+          type: string
+          example: 5 O'clock every Monday
       example:
-        author: author
-        isbn: isbn
-        available: true
-        id: 0
-        title: title
-    User:
+        schedule: 5 O'clock every Monday
+        level: Intermediate
+        price: 10.5
+        availableSeats: 5
+        ID: 10
+        studentIDs:
+        - 198772
+        - 32224
+        - 44221
+        coachID: 8765
+    Coach:
       type: object
       properties:
-        id:
+        ID:
           type: integer
+          format: int64
+          example: 8765
         name:
           type: string
-        email:
-          type: string
+          example: John Doe
+        groupsCreated:
+          type: array
+          format: int64
+          example: "198772, 32224, 44221"
+          items: {}
       example:
-        name: name
-        id: 0
-        email: email
-    UserUpdate:
+        name: John Doe
+        groupsCreated: "198772, 32224, 44221"
+        ID: 8765
+    Student:
+      type: object
+      properties:
+        ID:
+          type: integer
+          format: int64
+          example: 198772
+        name:
+          type: string
+          example: Jane Smith
+        groupsEnrolled:
+          type: array
+          format: int64
+          example: "198772, 32224, 44221"
+          items: {}
+      example:
+        name: Jane Smith
+        ID: 198772
+        groupsEnrolled: "198772, 32224, 44221"
+    Classroom:
+      type: object
+      properties:
+        ID:
+          type: integer
+          format: int64
+          example: 1234
+        userList:
+          type: array
+          example:
+          - 198772
+          - 32224
+          - 44221
+          items:
+            type: integer
+            format: int64
+        editingPermissionOwner:
+          type: integer
+          format: int64
+          example: 198772
+      example:
+        userList:
+        - 198772
+        - 32224
+        - 44221
+        ID: 1234
+        editingPermissionOwner: 198772
+    groups_enroll_body:
+      required:
+      - groupID
+      - studentID
+      type: object
+      properties:
+        studentID:
+          type: integer
+          format: int64
+        groupID:
+          type: integer
+          format: int64
+      example:
+        studentID: 0
+        groupID: 6
+    groups_unenroll_body:
+      required:
+      - groupID
+      - studentID
+      type: object
+      properties:
+        studentID:
+          type: integer
+          format: int64
+        groupID:
+          type: integer
+          format: int64
+    coach_body:
+      required:
+      - name
       type: object
       properties:
         name:
           type: string
-        email:
-          type: string
-    Borrowing:
-      type: object
-      properties:
-        userId:
-          type: integer
-        bookId:
-          type: integer
-        borrowDate:
-          type: string
-          format: date-time
-        dueDate:
-          type: string
-          format: date-time
-      example:
-        dueDate: 2000-01-23T04:56:07.000+00:00
-        userId: 0
-        borrowDate: 2000-01-23T04:56:07.000+00:00
-        bookId: 6
-    BorrowRequest:
-      type: object
-      properties:
-        userId:
-          type: integer
-    ReturnRequest:
-      type: object
-      properties:
-        userId:
-          type: integer
