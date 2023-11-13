@@ -12,3 +12,13 @@ module.exports.getCoach = function getCoach (req, res, next, coachID) {
       utils.writeJson(res, response);
     });
 };
+
+module.exports.postCoach = function postCoach (req, res, next, body) {
+  Coach.postCoach(body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
