@@ -11,6 +11,8 @@ info:
 servers:
 - url: https://virtserver.swaggerhub.com/TSAISIDOROS/SySkaki/1.0.0
   description: SwaggerHub API Auto Mocking
+- url: https://localhost:8080
+  description: localhost API
 tags:
 - name: group
   description: Endpoints related to chess groups
@@ -227,6 +229,29 @@ paths:
         schema:
           type: integer
           format: int64
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coach'
+        "400":
+          description: Invalid coach ID
+      x-swagger-router-controller: Coach
+  /coach:
+    post:
+      tags:
+      - coach
+      summary: Create a new coach given their name
+      operationId: postCoach
+      requestBody:
+        description: JSON object with the studentID and groupID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/coach_body'
+        required: true
       responses:
         "200":
           description: Successful operation
@@ -529,3 +554,10 @@ components:
         groupID:
           type: integer
           format: int64
+    coach_body:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
