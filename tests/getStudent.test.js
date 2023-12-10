@@ -21,12 +21,29 @@ test('test to pass', (t)=> {
 });
 
 test('GET Student by function', async (t) => {
-    const result = await getStudent();
-    t.is(result.length ,2);
-    t.is(result[0].name, "Jane Smith");
-    // t.is(result[1].name, "John Doe");
-    t.is(result[1].ID, 32224);
 
+    const id = 198772;
+
+    const result = await getStudent(id);
+    // check that student  looks like the example
+    // examples['application/json'] = {
+    //     "name" : "Jane Smith",
+    //     "ID" : 198772,
+    //     "groupsEnrolled" : "123, 124, 125"
+    //   };
+
+    // check that result is a dictionary
+    t.is(typeof result, 'object');
+
+    // check it has the right keys
+    t.true(result.hasOwnProperty('name'));
+    t.true(result.hasOwnProperty('ID'));
+    t.true(result.hasOwnProperty('groupsEnrolled'));
+
+    // check the values are correct
+    t.is(result.name, "Jane Smith");
+    t.is(result.ID, id);
+    t.is(result.groupsEnrolled, "123, 124, 125");
 });
 
 // test('does the id exists?', async (t) => {
