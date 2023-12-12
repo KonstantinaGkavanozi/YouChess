@@ -49,7 +49,6 @@ test('GET Student by function', async (t) => {
     // t.is(result[0].name, "Jane Smith");
     // // t.is(result[1].name, "John Doe");
     // t.is(result[1].ID, 32224);
-
 });
 
 // test('does the id exists?', async (t) => {

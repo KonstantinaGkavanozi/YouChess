@@ -20,6 +20,15 @@ exports.getStudent = function(studentID) {
     } else {
       resolve();
     }
+
+    // if (examples.hasOwnProperty(studentID)) {
+    //   // If the provided studentID is valid, return the student information
+    //   resolve(examples[studentID]);
+    // } else {
+    //   // If the provided studentID is not valid, return an error
+    //   reject(new Error('Student not found'));
+    //   // console.log("Student not found");
+    // }
   });
 }
 
