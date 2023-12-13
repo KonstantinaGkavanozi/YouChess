@@ -197,9 +197,9 @@ paths:
         schema:
           type: string
           enum:
-          - price(asc.)
-          - price(desc.)
-          - availableSeats(desc.)
+          - price_asc
+          - price_desc
+          - availableSeats_desc
       responses:
         "200":
           description: Successful operation
