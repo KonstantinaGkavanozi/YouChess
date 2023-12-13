@@ -21,6 +21,7 @@ test('test to pass', (t)=> {
 });
 
 test('GET Student by function', async (t) => {
+
     const id = 198772;
 
     const result = await getStudent(id);
@@ -42,14 +43,7 @@ test('GET Student by function', async (t) => {
     // check the values are correct
     t.is(result.name, "Jane Smith");
     t.is(result.ID, id);
-    t.deepEqual(result.groupsEnrolled, [198772, 32224, 44221]);
-
-    // const result = await getStudent();
-    // t.is(result.length ,2);
-    // t.is(result[0].name, "Jane Smith");
-    // // t.is(result[1].name, "John Doe");
-    // t.is(result[1].ID, 32224);
-
+    t.is(result.groupsEnrolled, "123, 124, 125");
 });
 
 // test('does the id exists?', async (t) => {
