@@ -10,16 +10,21 @@
 exports.getStudent = function(studentID) {
   return new Promise(function(resolve, reject) {
     var examples = {};
+
+    if (typeof studentID !== 'number' && typeof studentID !== 'bigint') {
+      reject('Invalid input: studentID should not be a string.');
+      return;
+    }
     examples['application/json'] = {
   "name" : "Jane Smith",
   "ID" : 198772,
-  "groupsEnrolled" : "198772, 32224, 44221"
+  "groupsEnrolled" : "123, 124, 125"
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
       resolve();
     }
+
   });
 }
-
