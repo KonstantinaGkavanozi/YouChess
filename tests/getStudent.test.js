@@ -20,23 +20,66 @@ test('test to pass', (t)=> {
     t.pass();
 });
 
-test('GET Student by function', async (t) => {
-    const result = await getStudent();
-    t.is(result.length ,2);
-    t.is(result[0].name, "Jane Smith");
-    // t.is(result[1].name, "John Doe");
-    t.is(result[1].ID, 32224);
+
+// ------------------ Test by function ------------------
+
+test('getStudent with specific id by function', async (t) => {
+    const id = 198772;
+    
+    const result = await getStudent(id);
+    //check that student looks like the example
+    // examples['application/json'] = {
+    //     "name" : "Jane Smith",
+    //     "ID" : 198772,
+    //     "groupsEnrolled" : "123, 124, 125"
+    //   };
+
+    // check it has the right keys
+    t.true(result.hasOwnProperty('name'));
+    t.true(result.hasOwnProperty('ID'));
+    t.true(result.hasOwnProperty('groupsEnrolled'));
+
+    // check the values are correct
+    t.is(result.name, "Jane Smith");
+    t.is(result.ID, id);
+    t.is(result.groupsEnrolled, "123, 124, 125");
 
 });
 
-// test('does the id exists?', async (t) => {
-//     const result = await getStudent();
-//     t.is(getStudent(198772),result[0].ID);
-// });
-// test('getStudent', async (t) => {
-//     const studentID = 198772;
-//     const { body, statusCode } = await t.context.got(`student/${studentID}`);
-//     // t.is(body[0].name, "Jane Smith");
-//     t.is(statusCode, 200);
-//     t.is(body[1].ID,32224);
-// });
+test('getStudent with id of type string by function', async (t) => {
+    const id = "fjsffe";
+    const result = await getStudent(id);
+
+    t.is(result.ID, id);
+});
+
+test('getStudent with id of type char by function', async (t) => {
+    const id = 'e';
+    const result = await getStudent(id);
+
+    t.is(result.ID, id);
+});
+
+test('getStudent with id of type NaN by function', async (t) => {
+    const id = NaN;
+    const result = await getStudent(id);
+
+    t.is(result.ID, id);
+});
+
+test('getStudent with id of type undefined by function', async (t) => {
+    const id = undefined;
+    const result = await getStudent(id);
+
+    t.is(result.ID, id);
+});
+
+// ------------------ Test by endpoint  ------------------
+
+test('getStudent by id', async (t) => {
+    const studentID = "yvghhg";
+    const { body, statusCode } = await t.context.got(`student/${studentID}`);
+    // t.is(body[0].name, "Jane Smith");
+    // t.is(statusCode, 400);
+    t.is(body.ID,198772);
+});
