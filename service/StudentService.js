@@ -13,7 +13,7 @@ exports.getStudent = function(studentID) {
     examples['application/json'] = {
   "name" : "Jane Smith",
   "ID" : studentID,
-  "groupsEnrolled" : "123, 124, 125"
+  "groupsEnrolled" : [123, 124, 125]
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
