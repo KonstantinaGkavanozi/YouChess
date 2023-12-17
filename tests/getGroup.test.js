@@ -29,36 +29,28 @@ test('GET Group by function', async (t) => {
     const id = 198772;
 
     const result = await getGroup(id);
-    // check that group looks like the example
-    // examples['application/json'] = {
-    //     "schedule" : "5 O'clock every Monday",
-    //     "level" : "Intermediate",
-    //     "price" : 10.5,
-    //     "availableSeats" : 5,
-    //     "ID" : 10,
-    //     "studentIDs" : [ 198772, 32224, 44221 ],
-    //     "coachID" : 8765
-    //   };
 
     // check that result is a dictionary
     t.is(typeof result, 'object');
 
-    // check it has the right keys
-    t.true(result.hasOwnProperty('schedule'));
-    t.true(result.hasOwnProperty('level'));
-    t.true(result.hasOwnProperty('price'));
-    t.true(result.hasOwnProperty('availableSeats'));
-    t.true(result.hasOwnProperty('ID'));
-    t.true(result.hasOwnProperty('studentIDs'));
-    t.true(result.hasOwnProperty('coachID'));
+    
+    const expected = {
+        "schedule": "5 O'clock every Monday",
+        "level": "Intermediate",
+        "price": 10.5,
+        "availableSeats": 5,
+        "ID": id,
+        "studentIDs": [198772, 32224, 44221],
+        "coachID": 8765
+      };
 
-    // check the values are correct
-    t.is(result.schedule, "5 O'clock every Monday");
-    t.is(result.level, "Intermediate");
-    t.is(result.price, 10.5);
-    t.is(result.availableSeats, 5);
-    t.is(result.ID, id);
-    t.deepEqual(result.studentIDs, [198772,32224,44221]);
-    t.is(result.coachID,  8765);
+    const expectedKeys = Object.keys(expected);
+    expectedKeys.forEach(key => {
+      t.true(result.hasOwnProperty(key), `Result should have key: ${key}`);
+    });
+
+    
+    // Assert that the actual result matches the expected result
+    t.deepEqual(result, expected);
 });
 
