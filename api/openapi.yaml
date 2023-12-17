@@ -475,11 +475,11 @@ components:
         groupsCreated:
           type: array
           format: int64
-          example: "198772, 32224, 44221"
+          example: [198772, 32224, 44221]
           items: {}
       example:
         name: John Doe
-        groupsCreated: "198772, 32224, 44221"
+        groupsCreated: [198772, 32224, 44221]
         ID: 8765
     Student:
       type: object
@@ -494,12 +494,12 @@ components:
         groupsEnrolled:
           type: array
           format: int64
-          example: "123, 124, 125"
+          example: [123, 124, 125]
           items: {}
       example:
         name: Jane Smith
         ID: 198772
-        groupsEnrolled: "123, 124, 125"
+        groupsEnrolled: [123, 124, 125]
     Classroom:
       type: object
       properties:
