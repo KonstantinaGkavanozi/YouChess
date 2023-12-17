@@ -10,15 +10,25 @@
 exports.createGroup = function(body) {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    examples['application/json'] = {
-  "schedule" : "5 O'clock every Monday",
-  "level" : "Intermediate",
-  "price" : 10.5,
-  "availableSeats" : 5,
-  "ID" : 10,
-  "studentIDs" : [ 198772, 32224, 44221 ],
-  "coachID" : 8765
-};
+    // examples['application/json'] = {
+    //   "schedule" : "5 O'clock every Monday",
+    //   "level" : "Intermediate",
+    //   "price" : 10.5,
+    //   "availableSeats" : 5,
+    //   "ID" : 10,
+    //   "studentIDs" : [ 198772, 32224, 44221 ],
+    //   "coachID" : 8765
+    // };
+    examples['application/json'] = body;
+
+    // check that body has the right keys
+    const keys = ['schedule', 'level', 'price', 'availableSeats', 'ID', 'studentIDs', 'coachID'];
+    for (var i = 0; i < keys.length; i++) {
+      if (!body.hasOwnProperty(keys[i])) {
+        reject(new Error('Response code 405 (Invalid Input)'));
+      }
+    }
+
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
