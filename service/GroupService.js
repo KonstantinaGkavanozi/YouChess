@@ -119,8 +119,8 @@ exports.getGroup = function(groupID) {
   "level" : "Intermediate",
   "price" : 10.5,
   "availableSeats" : 5,
-  "ID" : 10,
-  "studentIDs" : [ 198772, 32224, 44221 ],
+  "ID" : groupID,
+  "studentIDs" : [198772,32224,44221],
   "coachID" : 8765
 };
     if (Object.keys(examples).length > 0) {
