@@ -43,17 +43,5 @@ test('GET Student by function', async (t) => {
     // check the values are correct
     t.is(result.name, "Jane Smith");
     t.is(result.ID, id);
-    t.is(result.groupsEnrolled, "123, 124, 125");
+    t.deepEqual(result.groupsEnrolled, [123, 124, 125]);
 });
-
-// test('does the id exists?', async (t) => {
-//     const result = await getStudent();
-//     t.is(getStudent(198772),result[0].ID);
-// });
-// test('getStudent', async (t) => {
-//     const studentID = 198772;
-//     const { body, statusCode } = await t.context.got(`student/${studentID}`);
-//     // t.is(body[0].name, "Jane Smith");
-//     t.is(statusCode, 200);
-//     t.is(body[1].ID,32224);
-// });
