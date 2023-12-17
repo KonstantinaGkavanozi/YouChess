@@ -17,8 +17,8 @@ exports.getStudent = function(studentID) {
     }
     examples['application/json'] = {
   "name" : "Jane Smith",
-  "ID" : 198772,
-  "groupsEnrolled" : "123, 124, 125"
+  "ID" : studentID,
+  "groupsEnrolled" : [123, 124, 125]
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
@@ -26,5 +26,13 @@ exports.getStudent = function(studentID) {
       resolve();
     }
 
+    // if (examples.hasOwnProperty(studentID)) {
+    //   // If the provided studentID is valid, return the student information
+    //   resolve(examples[studentID]);
+    // } else {
+    //   // If the provided studentID is not valid, return an error
+    //   reject(new Error('Student not found'));
+    //   // console.log("Student not found");
+    // }
   });
 }
