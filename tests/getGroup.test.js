@@ -20,9 +20,7 @@ test('test to pass', (t)=> {
     t.pass();
 });
 
-test('Ava is imported', (t) => {
-    t.truthy(test, 'Ava is imported successfully');
-});
+
 
 test('GET Group by function', async (t) => {
 
