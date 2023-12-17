@@ -12,7 +12,7 @@ exports.getCoach = function(coachID) {
     var examples = {};
     examples['application/json'] = {
   "name" : "John Doe",
-  "groupsCreated" : "198772, 32224, 44221",
+  "groupsCreated" : [ 198772, 32224, 44221 ],
   "ID" : 8765
 };
     if (Object.keys(examples).length > 0) {
@@ -35,7 +35,7 @@ exports.postCoach = function(body) {
     var examples = {};
     examples['application/json'] = {
   "name" : "John Doe",
-  "groupsCreated" : "198772, 32224, 44221",
+  "groupsCreated" : [198772, 32224, 44221],
   "ID" : 8765
 };
     if (Object.keys(examples).length > 0) {
