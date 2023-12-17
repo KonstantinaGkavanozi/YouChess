@@ -41,6 +41,7 @@ exports.deleteGroup = function(groupID) {
   });
 }
 
+// Implemented simple logic to be able to develop more acuurate unit tests
 
 /**
  * Enroll a student in a group
@@ -52,11 +53,12 @@ exports.deleteGroup = function(groupID) {
 exports.enrollStudent = function(body) {
   return new Promise(function(resolve, reject) {
     var examples = {};
+    examples['application/json'] = body;
+    // Swagger generated code
     // examples['application/json'] = {
     //   "studentID" : 0,
     //   "groupID" : 6
     // };
-    examples['application/json'] = body;
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
@@ -65,6 +67,7 @@ exports.enrollStudent = function(body) {
   });
 }
 
+// Implemented logic to be able to develop more acuurate unit tests
 
 /**
  * Find available groups
@@ -176,6 +179,7 @@ exports.findAvailableGroups = function(price_min,price_max,level,sortBy) {
       examples['application/json'].sort(sorting_func);
     }
 
+    // Swagger generated code
     // examples['application/json'] = [ {
     //   "schedule" : "5 O'clock every Monday",
     //   "level" : "Intermediate",
