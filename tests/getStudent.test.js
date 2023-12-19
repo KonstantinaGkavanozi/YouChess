@@ -20,10 +20,8 @@ test('test to pass', (t)=> {
     t.pass();
 });
 
+test('GET Student by function', async (t) => {
 
- // ------------------ Test by function ------------------
-
-test('getStudent with specific id by function', async (t) => {
     const id = 198772;
     const group_ids = [123, 124, 125];
     const result = await getStudent(id);
