@@ -451,11 +451,29 @@ test('GET group/findAvailable no queries by function', async (t) => {
 });
 
 
-test('GET group/findAvailable Bad Request by function', async (t) => {
+test('GET group/findAvailable invalid level by function', async (t) => {
     const price_min = undefined
     const price_max = undefined
     const level = "Noob"
     const sortBy = undefined
+
+    let err = false
+    try{
+        const result = await findAvailableGroups(price_min,price_max,level,sortBy);
+    }
+    catch(e){
+        err = true
+        console.log(e)
+    }
+
+    t.true(err)
+})
+
+test('GET group/findAvailable invalid sortBy by function', async (t) => {
+    const price_min = undefined
+    const price_max = undefined
+    const level = undefined
+    const sortBy = "popularity"
 
     let err = false
     try{
