@@ -41,6 +41,7 @@ exports.deleteGroup = function(groupID) {
   });
 }
 
+// Implemented simple logic to be able to develop more acuurate unit tests
 
 /**
  * Enroll a student in a group
@@ -52,10 +53,12 @@ exports.deleteGroup = function(groupID) {
 exports.enrollStudent = function(body) {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    examples['application/json'] = {
-  "studentID" : 0,
-  "groupID" : 6
-};
+    examples['application/json'] = body;
+    // Swagger generated code
+    // examples['application/json'] = {
+    //   "studentID" : 0,
+    //   "groupID" : 6
+    // };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
@@ -64,6 +67,7 @@ exports.enrollStudent = function(body) {
   });
 }
 
+// Implemented logic to be able to develop more acuurate unit tests
 
 /**
  * Find available groups
@@ -78,23 +82,121 @@ exports.enrollStudent = function(body) {
 exports.findAvailableGroups = function(price_min,price_max,level,sortBy) {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    examples['application/json'] = [ {
-  "schedule" : "5 O'clock every Monday",
-  "level" : "Intermediate",
-  "price" : 10.5,
-  "availableSeats" : 5,
-  "ID" : 10,
-  "studentIDs" : [ 198772, 32224, 44221 ],
-  "coachID" : 8765
-}, {
-  "schedule" : "5 O'clock every Monday",
-  "level" : "Intermediate",
-  "price" : 10.5,
-  "availableSeats" : 5,
-  "ID" : 10,
-  "studentIDs" : [ 198772, 32224, 44221 ],
-  "coachID" : 8765
-} ];
+
+    if (price_min === undefined){
+      price_min = -1;
+    }
+
+    if (price_max === undefined){
+      price_max = Infinity;
+    }
+
+    if (level === undefined){
+      level = ["Beginner", "Intermediate", "Advanced"];
+    }
+    else{
+      if (["Beginner", "Intermediate", "Advanced"].includes(level)){
+        level = [level];
+      }
+      else{
+        reject();
+      }
+    }
+
+    const db = [
+      {
+        "schedule" : "5 O'clock every Monday",
+        "level" : "Advanced",
+        "price" : 12,
+        "availableSeats" : 2,
+        "ID" : 1,
+        "studentIDs" : [ 198772, 32224, 44221 ],
+        "coachID" : 8765
+      },
+      {
+        "schedule" : "5 O'clock every Monday",
+        "level" : "Intermediate",
+        "price" : 5,
+        "availableSeats" : 5,
+        "ID" : 2,
+        "studentIDs" : [ 198772, 32224, 44221 ],
+        "coachID" : 8765
+      },
+      {
+        "schedule" : "5 O'clock every Monday",
+        "level" : "Intermediate",
+        "price" : 10.5,
+        "availableSeats" : 4,
+        "ID" : 3,
+        "studentIDs" : [ 198772, 32224, 44221 ],
+        "coachID" : 8765
+      },
+      {
+        "schedule" : "5 O'clock every Monday",
+        "level" : "Intermediate",
+        "price" : 20,
+        "availableSeats" : 5,
+        "ID" : 4,
+        "studentIDs" : [ 198772, 32224, 44221 ],
+        "coachID" : 8765
+      },
+      {
+        "schedule" : "5 O'clock every Monday",
+        "level" : "Beginner",
+        "price" : 7,
+        "availableSeats" : 1,
+        "ID" : 5,
+        "studentIDs" : [ 198772, 32224, 44221 ],
+        "coachID" : 8765
+      }
+    ]
+
+    examples['application/json'] = [];
+
+    for (const group of db){
+      if (
+        price_min <= group.price
+        && group.price <= price_max
+        && level.includes(group.level)
+      ){
+        examples['application/json'].push(group);
+      }
+    }
+
+    if (sortBy !== undefined){
+      if (sortBy === "price_asc"){
+        var sorting_func = function(a, b){return a.price - b.price};
+      }
+      else if (sortBy === "price_desc") {
+        var sorting_func = function(a, b){return b.price - a.price};
+      } else if (sortBy === "availableSeats_desc"){
+        var sorting_func = function(a, b){return b.availableSeats - a.availableSeats};
+      }
+      else{
+        reject();
+      }
+
+      examples['application/json'].sort(sorting_func);
+    }
+
+    // Swagger generated code
+    // examples['application/json'] = [ {
+    //   "schedule" : "5 O'clock every Monday",
+    //   "level" : "Intermediate",
+    //   "price" : 10.5,
+    //   "availableSeats" : 5,
+    //   "ID" : 10,
+    //   "studentIDs" : [ 198772, 32224, 44221 ],
+    //   "coachID" : 8765
+    // }, {
+    //   "schedule" : "5 O'clock every Monday",
+    //   "level" : "Intermediate",
+    //   "price" : 10.5,
+    //   "availableSeats" : 5,
+    //   "ID" : 10,
+    //   "studentIDs" : [ 198772, 32224, 44221 ],
+    //   "coachID" : 8765
+    // } ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {

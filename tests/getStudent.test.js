@@ -21,7 +21,6 @@ test('test to pass', (t)=> {
 });
 
 test('GET Student by function', async (t) => {
-
     const id = 198772;
 
     const result = await getStudent(id);
