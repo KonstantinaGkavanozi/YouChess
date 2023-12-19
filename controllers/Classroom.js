@@ -4,6 +4,7 @@ var utils = require('../utils/writer.js');
 var Classroom = require('../service/ClassroomService');
 
 module.exports.getClassroom = function getClassroom (req, res, next, groupID) {
+
   Classroom.getClassroom(groupID)
     .then(function (response) {
       utils.writeJson(res, response);

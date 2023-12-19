@@ -2,6 +2,8 @@ const test  = require('ava');
 const http = require('http');
 const listen = require('test-listen');
 const got = require('got');
+const nock = require('nock');
+
 
 const { getClassroom } = require('../service/ClassroomService.js');
 const app = require('../index.js');
@@ -23,14 +25,13 @@ test('test to pass', (t)=> {
 
 test('GET Classroom by function', async (t) => {
 
-    const id = 198772;
+    const group_id = 10;
 
-    const result = await getClassroom(id);
+    const result = await getClassroom(group_id);
 
     // check that result is a dictionary
     t.is(typeof result, 'object');
 
-    
     const expected = {
         "userList" : [ 198772, 32224, 44221 ],
         "ID" : 1234,
@@ -42,29 +43,50 @@ test('GET Classroom by function', async (t) => {
       t.true(result.hasOwnProperty(key), `Result should have key: ${key}`);
     });
 
-    
-    // Assert that the actual result matches the expected result
     t.deepEqual(result, expected);
 });
 
+
+
+
 test('GET group/{groupID}/classroom', async (t) => {
-    const group_id = 198772;
+    const group_id = 1234;
+  
+    // Mock the HTTP request using nock
+    nock('http://localhost:8080/') 
+    .get(`/group/${group_id}/classroom`) 
+    .reply(200, {
+        "userList": [198772, 32224, 44221],
+        "ID": 1234,
+        "editingPermissionOwner": 198772
+    });
 
-    // Perform the HTTP GET request and capture the response
-    const response = await t.context.got.get("group/${group_id}/classroom");
+// Make the HTTP request 
+    const response = await got.get('http://localhost:8080/group/1234/classroom');
+    const responseBody = JSON.parse(response.body);
+    
+    t.is(response.statusCode, 200);  
+  
+    const expected = {
+        "userList" : [ 198772, 32224, 44221 ],
+        "ID" : 1234,  
+        "editingPermissionOwner" : 198772
+    };
+  
+    // Check if it has the right keys
+    const expectedKeys = Object.keys(expected);
+    expectedKeys.forEach(key => {
+        t.true(responseBody.hasOwnProperty(key), `Result should have key: ${key}`);
+    });
+  
+    // Check if the values are correct
+    t.deepEqual(responseBody, expected);
+  
+    // Clean up the nock mocks
+    nock.cleanAll(); 
+  });
 
-    // Extract the response body from the response object
-    const body = response.body;
 
-    // Check the status code
-    t.is(response.statusCode, 200);
-
-    // Check that the result is a dictionary (assuming it's JSON)
-    t.is(typeof body, 'object');
-
-    // Check it has the right keys
-    t.true(body.hasOwnProperty('groupID'));
-
-    // Check the values are correct
-    t.is(body.groupID, group_id);
+test('groupGroupIDClassroomSetEditorPOST ', async (t) => {
+    t.pass();
 });

@@ -17,6 +17,7 @@
     "@apidevtools/json-schema-ref-parser": "^11.1.0",
     "connect": "^3.2.0",
     "js-yaml": "^3.3.0",
+    "nock": "^13.4.0",
     "oas3-tools": "^2.2.3"
   },
   "devDependencies": {
