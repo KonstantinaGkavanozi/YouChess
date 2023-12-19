@@ -1,3 +1,4 @@
+//Set up the variables
 const http = require('http');
 const test = require('ava');
 const listen = require('test-listen');
@@ -5,6 +6,7 @@ const got = require('got');
 
 const { getCoach } = require('../service/CoachService.js');
 const app = require('../index.js');
+
 
 test.before(async (t) => {
     t.context.server = http.createServer(app);
@@ -38,7 +40,12 @@ test('GET Coach by function', async (t) => {
     // check the values are correct
     t.is(result.name, "John Doe");
     t.is(result.ID, id);
-    t.is(result.groupsCreated, "198772, 32224, 44221");
+    t.deepEqual(result.groupsCreated, [198772, 32224, 44221]);
+   
 });
+
+
+
+
 
     
