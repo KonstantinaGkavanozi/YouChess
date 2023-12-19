@@ -21,11 +21,11 @@ test('test to pass', (t)=> {
 });
 
 
-// ------------------ Test by function ------------------
+ // ------------------ Test by function ------------------
 
 test('getStudent with specific id by function', async (t) => {
     const id = 198772;
-    
+    const group_ids = [123, 124, 125];
     const result = await getStudent(id);
     //check that student looks like the example
     // examples['application/json'] = {
@@ -42,44 +42,60 @@ test('getStudent with specific id by function', async (t) => {
     // check the values are correct
     t.is(result.name, "Jane Smith");
     t.is(result.ID, id);
-    t.is(result.groupsEnrolled, "123, 124, 125");
+    t.deepEqual(result.groupsEnrolled, group_ids);
 
 });
 
-test('getStudent with id of type string by function', async (t) => {
+
+//  ------------------ Test by endpoint  ------------------
+
+
+test('getStudent with specific id', async (t) => {
+    const id = 198772;
+    const { body, statusCode } = await t.context.got.get(`student/${id}`);
+    t.is(body.name, "Jane Smith");
+
+    t.is(statusCode, 200);
+    t.is(body.ID,id);
+});
+
+
+test('getStudent with id of type string', async (t) => {
     const id = "fjsffe";
-    const result = await getStudent(id);
+    const res = await t.throwsAsync(() => t.context.got.get(`student?id=${id}`));
 
-    t.is(result.ID, id);
+    t.is(res.message, "Response code 404 (Not Found)")
 });
 
-test('getStudent with id of type char by function', async (t) => {
-    const id = 'e';
-    const result = await getStudent(id);
 
-    t.is(result.ID, id);
+test('getStudent with id of char string', async (t) => {
+    const id = 'v';
+    const res = await t.throwsAsync(() => t.context.got.get(`student?id=${id}`));
+
+    t.is(res.message, "Response code 404 (Not Found)")
 });
 
-test('getStudent with id of type NaN by function', async (t) => {
+test('getStudent with id of NaN string', async (t) => {
     const id = NaN;
-    const result = await getStudent(id);
+    const res = await t.throwsAsync(() => t.context.got.get(`student?id=${id}`));
 
-    t.is(result.ID, id);
+    t.is(res.message, "Response code 404 (Not Found)")
 });
 
-test('getStudent with id of type undefined by function', async (t) => {
+test('getStudent with id of undefined string', async (t) => {
     const id = undefined;
-    const result = await getStudent(id);
+    const res = await t.throwsAsync(() => t.context.got.get(`student?id=${id}`));
 
-    t.is(result.ID, id);
+    t.is(res.message, "Response code 404 (Not Found)")
 });
 
-// ------------------ Test by endpoint  ------------------
 
-test('getStudent by id', async (t) => {
-    const studentID = "yvghhg";
-    const { body, statusCode } = await t.context.got(`student/${studentID}`);
-    // t.is(body[0].name, "Jane Smith");
-    // t.is(statusCode, 400);
-    t.is(body.ID,198772);
+test('getStudent with non-existent id', async (t) => {
+    const nonExistentStudentID = 999999;
+    const res = await t.throwsAsync(() => t.context.got.get(`student?id=${nonExistentStudentID}`));
+
+    t.is(res.message, "Response code 404 (Not Found)")
+    
 });
+
+
