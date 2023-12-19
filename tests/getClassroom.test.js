@@ -47,3 +47,24 @@ test('GET Classroom by function', async (t) => {
     t.deepEqual(result, expected);
 });
 
+test('GET group/{groupID}/classroom', async (t) => {
+    const group_id = 198772;
+
+    // Perform the HTTP GET request and capture the response
+    const response = await t.context.got.get("group/${group_id}/classroom");
+
+    // Extract the response body from the response object
+    const body = response.body;
+
+    // Check the status code
+    t.is(response.statusCode, 200);
+
+    // Check that the result is a dictionary (assuming it's JSON)
+    t.is(typeof body, 'object');
+
+    // Check it has the right keys
+    t.true(body.hasOwnProperty('groupID'));
+
+    // Check the values are correct
+    t.is(body.groupID, group_id);
+});
