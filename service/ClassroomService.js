@@ -51,11 +51,16 @@ exports.groupGroupIDClassroomSetEditorPOST = function(groupID,userID) {
 exports.updateClassroom = function(body,groupID) {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    examples['application/json'] = {
-  "userList" : [ 198772, 32224, 44221 ],
-  "ID" : 1234,
-  "editingPermissionOwner" : 198772
-};
+    examples['application/json'] = body;
+
+    //     {
+//   "userList" : [198772, 32224, 44221],
+//   "ID" : 1234,
+//   "editingPermissionOwner" : 198772
+// };
+  
+    
+
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
