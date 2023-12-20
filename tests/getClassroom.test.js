@@ -86,7 +86,3 @@ test('GET group/{groupID}/classroom', async (t) => {
     nock.cleanAll(); 
   });
 
-
-test('groupGroupIDClassroomSetEditorPOST ', async (t) => {
-    t.pass();
-});
