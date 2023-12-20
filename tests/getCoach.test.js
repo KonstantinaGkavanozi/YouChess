@@ -1,3 +1,5 @@
+//Get Coach
+
 //Set up the variables
 const http = require('http');
 const test = require('ava');
@@ -26,6 +28,7 @@ test('test to pass', (t)=> {
 //Test Get Coach by function
 test('GET Coach by function', async (t) => {
 
+    //Expected returned object
     const expectedBody = {
         "name" : "John Doe",
         "groupsCreated" : [ 198772, 32224, 44221 ],
@@ -53,7 +56,7 @@ test('GET Coach by function', async (t) => {
 
 //Test GET Coach by endpoint
 
-test('Fetching coach data by ID', async (t) => {
+test('Get coach by endpoint', async (t) => {
 
     const expectedBody = {
         "name" : "John Doe",
@@ -88,7 +91,7 @@ test('Fetching coach data by ID', async (t) => {
 
 
 
-
+  
 
 
 

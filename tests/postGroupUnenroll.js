@@ -1,10 +1,14 @@
+//Post Group Unenroll
+
 const http = require('http');
 const test = require('ava');
 const listen = require('test-listen');
 const got = require('got');
 
+//Creating the right path
 const { unenrollStudent } = require('../service/GroupService.js');
 const app = require('../index.js');
+
 
 test.before(async (t) => {
     t.context.server = http.createServer(app);
@@ -23,8 +27,7 @@ test('test to pass', (t)=> {
 //Test by function
 test('POST Group unenroll by function', async (t) => {
 
-    //const group_id = 10;
-
+    //The expected object to be returned
     const body = {
         "schedule" : "5 O'clock every Monday",
         "level" : "Intermediate",
@@ -37,6 +40,7 @@ test('POST Group unenroll by function', async (t) => {
 
     const result = await unenrollStudent(body);
 
+    //Check if the return value is an object
     t.is(typeof result, 'object');
 
     // check if it has the right keys
@@ -64,6 +68,7 @@ test('POST Group unenroll by function', async (t) => {
 //Test by endpoint
 test('POST groups/unenroll successful', async (t) =>{
 
+    //The expected object 
     const expectedBody = {
         "schedule" : "5 O'clock every Monday",
         "level" : "Intermediate",
@@ -74,6 +79,7 @@ test('POST groups/unenroll successful', async (t) =>{
         "coachID" : 8765
     };
 
+    //Setting the variables needed to call the function
     const studentID = 198772;
     const groupID = 10;
 
@@ -104,3 +110,4 @@ test('POST groups/unenroll successful', async (t) =>{
     t.is(body.coachID, expectedBody.coachID);
 
 });
+
