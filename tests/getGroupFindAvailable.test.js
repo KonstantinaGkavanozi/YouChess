@@ -7,11 +7,12 @@ const { findAvailableGroups } = require('../service/GroupService.js');
 const app = require('../index.js');
 
 const {
-    test_level, test_price, 
+    test_level, 
+    test_price, 
     test_sorting_price_asc, 
     test_sorting_price_desc,
     test_sorting_available_seats_desc,
-    test_complex_combo,
+    test_complex_combo, 
     test_no_queries,
 }  = require('./test_logic/test_getGroupFindAvailable.js');
 
@@ -51,6 +52,7 @@ test('GET group/findAvailable price by function', async (t) => {
 
     test_price(t, result, price_min, price_max) // Test logic for price
 });
+
 
 test('GET group/findAvailable sorting price_asc by function', async (t) => {
     const price_min = undefined
