@@ -40,6 +40,7 @@ test('GET group/findAvailable level by function', async (t) => {
     test_level(t, result, level) // Test logic for level
 });
 
+
 test('GET group/findAvailable price by function', async (t) => {
     const price_min = 7
     const price_max = 11
@@ -51,6 +52,7 @@ test('GET group/findAvailable price by function', async (t) => {
 
     test_price(t, result, price_min, price_max) // Test logic for price
 });
+
 
 test('GET group/findAvailable sorting price_asc by function', async (t) => {
     const price_min = undefined
@@ -64,6 +66,7 @@ test('GET group/findAvailable sorting price_asc by function', async (t) => {
     test_sorting_price_asc(t, result) // Test logic for sorting by ascending price
 });
 
+
 test('GET group/findAvailable sorting price_desc by function', async (t) => {
     const price_min = undefined
     const price_max = undefined
@@ -75,6 +78,7 @@ test('GET group/findAvailable sorting price_desc by function', async (t) => {
 
     test_sorting_price_desc(t, result) // Test logic for sorting by descending price
 });
+
 
 test('GET group/findAvailable sorting availableSeats_desc by function', async (t) => {
     const price_min = undefined
@@ -88,6 +92,7 @@ test('GET group/findAvailable sorting availableSeats_desc by function', async (t
     test_sorting_available_seats_desc(t, result) // Test logic for sorting by descending available seats
 });
 
+
 test('GET group/findAvailable complex combo by function', async (t) => {
     const price_min = 6
     const price_max = 20
@@ -100,6 +105,7 @@ test('GET group/findAvailable complex combo by function', async (t) => {
     test_complex_combo(t, result, level, price_min, price_max) // Test logic for combination of queries (only works for sortBy=price_desc)
 });
 
+
 test('GET group/findAvailable no queries by function', async (t) => {
     const price_min = undefined
     const price_max = undefined
@@ -111,6 +117,7 @@ test('GET group/findAvailable no queries by function', async (t) => {
 
     test_no_queries(t, result) // Test logic for request with no queries
 });
+
 
 test('GET group/findAvailable invalid level by function', async (t) => {
     const price_min = undefined
@@ -129,6 +136,7 @@ test('GET group/findAvailable invalid level by function', async (t) => {
 
     t.true(err)
 })
+
 
 test('GET group/findAvailable invalid sortBy by function', async (t) => {
     const price_min = undefined
@@ -159,6 +167,7 @@ test('GET group/findAvailable level', async (t) => {
     test_level(t, body, level) // Test logic for level
 });
 
+
 test('GET group/findAvailable price', async (t) => {
     const price_min = 7;
     const price_max = 11;
@@ -170,6 +179,7 @@ test('GET group/findAvailable price', async (t) => {
     test_price(t, body, price_min, price_max) // Test logic for price
 });
 
+
 test('GET group/findAvailable sorting price asc', async (t) => {
     const sorting_filter = 'price_asc'
     const { body, statusCode } = await t.context.got.get(`group/findAvailable?sortBy=${sorting_filter}`);
@@ -179,6 +189,7 @@ test('GET group/findAvailable sorting price asc', async (t) => {
 
     test_sorting_price_asc(t, body) // Test logic for sorting by ascending price
 });
+
 
 test('GET group/findAvailable sorting price desc', async (t) => {
     const sorting_filter = 'price_desc'
@@ -190,6 +201,7 @@ test('GET group/findAvailable sorting price desc', async (t) => {
     test_sorting_price_desc(t, body) // Test logic for sorting by descending price
 });
 
+
 test('GET group/findAvailable sorting available seats desc', async (t) => {
     const sorting_filter = 'availableSeats_desc'
     const { body, statusCode } = await t.context.got.get(`group/findAvailable?sortBy=${sorting_filter}`);
@@ -199,6 +211,7 @@ test('GET group/findAvailable sorting available seats desc', async (t) => {
 
     test_sorting_available_seats_desc(t, body) // Test logic for sorting by descending available seats
 });
+
 
 test('GET group/findAvailable complex combo', async (t) => {
     const price_min = 6
@@ -215,11 +228,8 @@ test('GET group/findAvailable complex combo', async (t) => {
     test_complex_combo(t, body, level, price_min, price_max) // Test logic for combination of queries (only works for sortBy=price_desc)
 });
 
+
 test('GET group/findAvailable no queries', async (t) => {
-    const price_min = 6
-    const price_max = 20
-    const level = "Intermediate"
-    const sorting_filter = 'price_desc'
     const { body, statusCode } = await t.context.got.get(
         `group/findAvailable`
     );
@@ -229,6 +239,7 @@ test('GET group/findAvailable no queries', async (t) => {
 
     test_no_queries(t, body) // Test logic for request with no queries
 });
+
 
 test('GET group/findAvailable Bad Request', async (t) => {
     const price_min = "hi"
