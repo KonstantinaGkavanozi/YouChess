@@ -25,12 +25,8 @@ test.after.always((t) => {
     t.context.server.close();
 });
 
-test('test to pass', (t)=> {
-    t.pass();
-});
 
 // ---------------- Test by function ---------------------
-
 test('GET group/findAvailable level by function', async (t) => {
     const price_min = undefined
     const price_max = undefined
@@ -139,6 +135,7 @@ test('GET group/findAvailable invalid level by function', async (t) => {
     t.true(err)
 })
 
+
 test('GET group/findAvailable invalid sortBy by function', async (t) => {
     const price_min = undefined
     const price_max = undefined
@@ -157,9 +154,7 @@ test('GET group/findAvailable invalid sortBy by function', async (t) => {
     t.true(err)
 })
 
-
 // ---------------- Test by endpoint ---------------------
-
 test('GET group/findAvailable level', async (t) => {
     const level = "Intermediate"
     const { body, statusCode } = await t.context.got.get(`group/findAvailable?level=${level}`);
@@ -181,6 +176,7 @@ test('GET group/findAvailable price', async (t) => {
 
     test_price(t, body, price_min, price_max) // Test logic for price
 });
+
 
 test('GET group/findAvailable sorting price asc', async (t) => {
     const sorting_filter = 'price_asc'
