@@ -4,12 +4,16 @@ const listen = require('test-listen');
 const got = require('got');
 
 const { findAvailableGroups } = require('../service/GroupService.js');
-const { groups_db } = require('../service/GroupService.js');
 const app = require('../index.js');
 
-console.log(groups_db)
-
-// const {groups_db} = require('../service/GroupService.js')
+const {
+    test_level, test_price, 
+    test_sorting_price_asc, 
+    test_sorting_price_desc,
+    test_sorting_available_seats_desc,
+    test_complex_combo,
+    test_no_queries,
+}  = require('./test_logic/test_getGroupFindAvailable.js');
 
 test.before(async (t) => {
     t.context.server = http.createServer(app);
@@ -250,159 +254,3 @@ test('GET group/findAvailable Bad Request', async (t) => {
     ));
     t.is(res.message, "Response code 400 (Bad Request)")
 });
-
-
-// ----------------Functions that implement the logic of the tests--------------------
-
-function test_level(t, result_body, input_level){
-    // Check that all the returned groups have the right level
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('level'));
-        t.is(group.level, input_level)
-    } 
-    
-    // Database specific test, to test that all the qualified groups are returned  
-    t.deepEqual(
-        result_body,
-        [
-            groups_db[1],
-            groups_db[2],
-            groups_db[3],
-        ]
-    )
-}
-
-
-function test_price(t, result_body, input_price_min, input_price_max){
-    // Check that all the returned groups have a price between the range [price_min, price_max]
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('price'));
-        t.true(input_price_min <= group.price <= input_price_max)
-    } 
-    
-    // Database specific test, to test that all the qualified groups are returned
-    t.deepEqual(
-        result_body,
-        [
-            groups_db[2],
-            groups_db[4],
-        ]
-    )
-}
-
-
-function test_sorting_price_asc(t, result_body){
-    // Check that all the returned groups are sorted in ascending price order
-    cur_value = -1
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('price'));
-        t.true(group.price >= cur_value)
-        cur_value = group.price
-    }
-
-    // Database specific test, to test that all the qualified groups are returned
-    t.deepEqual(
-        result_body,
-        [
-            groups_db[1],
-            groups_db[4],
-            groups_db[2],
-            groups_db[0],
-            groups_db[3],
-        ]
-    )
-}
-
-
-function test_sorting_price_desc(t, result_body){
-    // Check that all the returned groups are sorted in descending price order 
-    cur_value = Infinity
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('price'));
-        t.true(group.price <= cur_value)
-        cur_value = group.price
-    }
-
-    // Database specific test, to test that all the qualified groups are returned
-    t.deepEqual(
-        result_body,
-        [
-            groups_db[3],
-            groups_db[0],
-            groups_db[2],
-            groups_db[4],
-            groups_db[1],
-        ]
-    )
-}
-
-
-function test_sorting_available_seats_desc(t, result_body){
-    // Check that all the returned groups are sorted in descending availableSeats order 
-    cur_value = Infinity
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('availableSeats'));
-        t.true(group.availableSeats <= cur_value)
-        cur_value = group.price
-    }
-
-    // Database specific test, to test that all the qualified groups are returned
-    t.deepEqual(
-        result_body, 
-        [
-            groups_db[1],
-            groups_db[3],
-            groups_db[2],
-            groups_db[0],
-            groups_db[4],
-        ]
-    )
-}
-
-
-function test_complex_combo(t, result_body, input_level, input_price_min, input_price_max){
-    // We assume sortBy = 'price_desc'
-
-    // Check that all the returned groups have the right level
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('level'));
-        t.is(group.level, input_level)
-    } 
-    // Check that all the returned groups have a price between the range [price_min, price_max]
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('price'));
-        t.true(input_price_min <= group.price <= input_price_max)
-    } 
-    // Check that all the returned groups are sorted in descending price order 
-    cur_value = Infinity
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('price'));
-        t.true(group.price <= cur_value)
-        cur_value = group.price
-    }
-
-    // Database specific test, to test that all the qualified groups are returned
-    t.deepEqual(
-        result_body, 
-        [
-            groups_db[3],
-            groups_db[2],
-        ]
-    )
-}
-
-
-function test_no_queries(t, result_body){
-    // Check that all the returned groups have the attributes that are used for filtering
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('price'));
-        t.true(group.hasOwnProperty('level'));
-        t.true(group.hasOwnProperty('availableSeats'));
-    }
-
-    // Database specific test, to test that all the qualified groups are returned
-    t.deepEqual(
-        result_body, 
-        groups_db
-    )
-}
