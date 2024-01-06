@@ -125,6 +125,7 @@ test('GET group/findAvailable invalid level by function', async (t) => {
     const level = "Noob"
     const sortBy = undefined
 
+    // Test that an error does get thrown
     let err = false
     try{
         const result = await findAvailableGroups(price_min,price_max,level,sortBy);
@@ -144,6 +145,7 @@ test('GET group/findAvailable invalid sortBy by function', async (t) => {
     const level = undefined
     const sortBy = "popularity"
 
+    // Test that an error does get thrown
     let err = false
     try{
         const result = await findAvailableGroups(price_min,price_max,level,sortBy);
@@ -246,5 +248,5 @@ test('GET group/findAvailable Bad Request', async (t) => {
     const res = await t.throwsAsync(() => t.context.got.get(
         `group/findAvailable?price_min=${price_min}`
     ));
-    t.is(res.message, "Response code 400 (Bad Request)")
+    t.is(res.message, "Response code 400 (Bad Request)") // Test that we do get a 400 response code
 });
