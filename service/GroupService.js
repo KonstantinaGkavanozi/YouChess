@@ -174,13 +174,14 @@ exports.findAvailableGroups = function(price_min,price_max,level,sortBy) {
     }
 
     if (sortBy !== undefined){
+      var sorting_func = undefined;
       if (sortBy === "price_asc"){
-        var sorting_func = function(a, b){return a.price - b.price};
+        sorting_func = function(a, b){return a.price - b.price};
       }
       else if (sortBy === "price_desc") {
-        var sorting_func = function(a, b){return b.price - a.price};
+        sorting_func = function(a, b){return b.price - a.price};
       } else if (sortBy === "availableSeats_desc"){
-        var sorting_func = function(a, b){return b.availableSeats - a.availableSeats};
+        sorting_func = function(a, b){return b.availableSeats - a.availableSeats};
       }
       else{
         reject();
