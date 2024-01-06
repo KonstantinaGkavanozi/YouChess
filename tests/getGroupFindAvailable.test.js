@@ -4,7 +4,12 @@ const listen = require('test-listen');
 const got = require('got');
 
 const { findAvailableGroups } = require('../service/GroupService.js');
+const { groups_db } = require('../service/GroupService.js');
 const app = require('../index.js');
+
+console.log(groups_db)
+
+// const {groups_db} = require('../service/GroupService.js')
 
 test.before(async (t) => {
     t.context.server = http.createServer(app);
@@ -260,33 +265,9 @@ function test_level(t, result_body, input_level){
     t.deepEqual(
         result_body,
         [
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 5,
-                "availableSeats" : 5,
-                "ID" : 2,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 10.5,
-                "availableSeats" : 4,
-                "ID" : 3,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 20,
-                "availableSeats" : 5,
-                "ID" : 4,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
+            groups_db[1],
+            groups_db[2],
+            groups_db[3],
         ]
     )
 }
@@ -303,24 +284,8 @@ function test_price(t, result_body, input_price_min, input_price_max){
     t.deepEqual(
         result_body,
         [
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 10.5,
-                "availableSeats" : 4,
-                "ID" : 3,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Beginner",
-                "price" : 7,
-                "availableSeats" : 1,
-                "ID" : 5,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
+            groups_db[2],
+            groups_db[4],
         ]
     )
 }
@@ -339,51 +304,11 @@ function test_sorting_price_asc(t, result_body){
     t.deepEqual(
         result_body,
         [
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 5,
-                "availableSeats" : 5,
-                "ID" : 2,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Beginner",
-                "price" : 7,
-                "availableSeats" : 1,
-                "ID" : 5,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 10.5,
-                "availableSeats" : 4,
-                "ID" : 3,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Advanced",
-                "price" : 12,
-                "availableSeats" : 2,
-                "ID" : 1,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 20,
-                "availableSeats" : 5,
-                "ID" : 4,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
+            groups_db[1],
+            groups_db[4],
+            groups_db[2],
+            groups_db[0],
+            groups_db[3],
         ]
     )
 }
@@ -402,51 +327,11 @@ function test_sorting_price_desc(t, result_body){
     t.deepEqual(
         result_body,
         [
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 20,
-                "availableSeats" : 5,
-                "ID" : 4,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Advanced",
-                "price" : 12,
-                "availableSeats" : 2,
-                "ID" : 1,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 10.5,
-                "availableSeats" : 4,
-                "ID" : 3,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Beginner",
-                "price" : 7,
-                "availableSeats" : 1,
-                "ID" : 5,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 5,
-                "availableSeats" : 5,
-                "ID" : 2,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
+            groups_db[3],
+            groups_db[0],
+            groups_db[2],
+            groups_db[4],
+            groups_db[1],
         ]
     )
 }
@@ -465,51 +350,11 @@ function test_sorting_available_seats_desc(t, result_body){
     t.deepEqual(
         result_body, 
         [
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 5,
-                "availableSeats" : 5,
-                "ID" : 2,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 20,
-                "availableSeats" : 5,
-                "ID" : 4,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 10.5,
-                "availableSeats" : 4,
-                "ID" : 3,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Advanced",
-                "price" : 12,
-                "availableSeats" : 2,
-                "ID" : 1,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Beginner",
-                "price" : 7,
-                "availableSeats" : 1,
-                "ID" : 5,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
+            groups_db[1],
+            groups_db[3],
+            groups_db[2],
+            groups_db[0],
+            groups_db[4],
         ]
     )
 }
@@ -540,24 +385,8 @@ function test_complex_combo(t, result_body, input_level, input_price_min, input_
     t.deepEqual(
         result_body, 
         [
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 20,
-                "availableSeats" : 5,
-                "ID" : 4,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 10.5,
-                "availableSeats" : 4,
-                "ID" : 3,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
+            groups_db[3],
+            groups_db[2],
         ]
     )
 }
@@ -574,52 +403,6 @@ function test_no_queries(t, result_body){
     // Database specific test, to test that all the qualified groups are returned
     t.deepEqual(
         result_body, 
-        [
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Advanced",
-                "price" : 12,
-                "availableSeats" : 2,
-                "ID" : 1,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 5,
-                "availableSeats" : 5,
-                "ID" : 2,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 10.5,
-                "availableSeats" : 4,
-                "ID" : 3,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 20,
-                "availableSeats" : 5,
-                "ID" : 4,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Beginner",
-                "price" : 7,
-                "availableSeats" : 1,
-                "ID" : 5,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            }
-        ]
+        groups_db
     )
 }
