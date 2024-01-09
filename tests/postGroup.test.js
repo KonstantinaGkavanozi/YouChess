@@ -1,3 +1,5 @@
+// Creating the post Group test
+
 const http = require('http');
 const test = require('ava');
 const listen = require('test-listen');
@@ -19,6 +21,8 @@ test.after.always((t) => {
 test('test to pass', (t)=> {
     t.pass();
 });
+
+// Testing the post group by Function
 
 test('Post group by function', async (t) => {
 
@@ -56,6 +60,7 @@ test('Post group by function', async (t) => {
     t.is(result.coachID, 8765);
 });
 
+// Testing the post Group by URL
 
 test('Post group by URL', async (t) => {
 
@@ -70,7 +75,7 @@ test('Post group by URL', async (t) => {
         studentIDs: [ 198772, 32224, 44221 ],
         coachID: 8765
     }});
-
+    // Check the value of the status 
     t.is(statusCode, 200);
 
     // check that result is a dictionary
@@ -95,6 +100,7 @@ test('Post group by URL', async (t) => {
     t.is(body.coachID, coachId);
 });
 
+// Making a Bad request for the test
 test('POST group Bad Request', async (t) => {
     const res = await t.throwsAsync(() => t.context.got.post("group", {json: null}))
     t.is(res.message, "Response code 400 (Bad Request)")
