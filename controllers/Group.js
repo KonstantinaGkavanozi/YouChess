@@ -1,3 +1,4 @@
+// Auto-Generated code from Swaggerhub
 'use strict';
 
 var utils = require('../utils/writer.js');
