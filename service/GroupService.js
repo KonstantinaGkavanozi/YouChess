@@ -89,6 +89,54 @@ exports.enrollStudent = function(body) {
  * sortBy String Sorting method that needs to be considered for filtering (optional)
  * returns List
  **/
+const groups_db = [
+  {
+    "schedule" : "5 O'clock every Monday",
+    "level" : "Advanced",
+    "price" : 12,
+    "availableSeats" : 2,
+    "ID" : 1,
+    "studentIDs" : [ 198772, 32224, 44221 ],
+    "coachID" : 8765
+  },
+  {
+    "schedule" : "5 O'clock every Monday",
+    "level" : "Intermediate",
+    "price" : 5,
+    "availableSeats" : 5,
+    "ID" : 2,
+    "studentIDs" : [ 198772, 32224, 44221 ],
+    "coachID" : 8765
+  },
+  {
+    "schedule" : "5 O'clock every Monday",
+    "level" : "Intermediate",
+    "price" : 10.5,
+    "availableSeats" : 4,
+    "ID" : 3,
+    "studentIDs" : [ 198772, 32224, 44221 ],
+    "coachID" : 8765
+  },
+  {
+    "schedule" : "5 O'clock every Monday",
+    "level" : "Intermediate",
+    "price" : 20,
+    "availableSeats" : 5,
+    "ID" : 4,
+    "studentIDs" : [ 198772, 32224, 44221 ],
+    "coachID" : 8765
+  },
+  {
+    "schedule" : "5 O'clock every Monday",
+    "level" : "Beginner",
+    "price" : 7,
+    "availableSeats" : 1,
+    "ID" : 5,
+    "studentIDs" : [ 198772, 32224, 44221 ],
+    "coachID" : 8765
+  }
+];
+exports.groups_db = groups_db;
 exports.findAvailableGroups = function(price_min,price_max,level,sortBy) {
   return new Promise(function(resolve, reject) {
     var examples = {};
@@ -113,57 +161,9 @@ exports.findAvailableGroups = function(price_min,price_max,level,sortBy) {
       }
     }
 
-    const db = [
-      {
-        "schedule" : "5 O'clock every Monday",
-        "level" : "Advanced",
-        "price" : 12,
-        "availableSeats" : 2,
-        "ID" : 1,
-        "studentIDs" : [ 198772, 32224, 44221 ],
-        "coachID" : 8765
-      },
-      {
-        "schedule" : "5 O'clock every Monday",
-        "level" : "Intermediate",
-        "price" : 5,
-        "availableSeats" : 5,
-        "ID" : 2,
-        "studentIDs" : [ 198772, 32224, 44221 ],
-        "coachID" : 8765
-      },
-      {
-        "schedule" : "5 O'clock every Monday",
-        "level" : "Intermediate",
-        "price" : 10.5,
-        "availableSeats" : 4,
-        "ID" : 3,
-        "studentIDs" : [ 198772, 32224, 44221 ],
-        "coachID" : 8765
-      },
-      {
-        "schedule" : "5 O'clock every Monday",
-        "level" : "Intermediate",
-        "price" : 20,
-        "availableSeats" : 5,
-        "ID" : 4,
-        "studentIDs" : [ 198772, 32224, 44221 ],
-        "coachID" : 8765
-      },
-      {
-        "schedule" : "5 O'clock every Monday",
-        "level" : "Beginner",
-        "price" : 7,
-        "availableSeats" : 1,
-        "ID" : 5,
-        "studentIDs" : [ 198772, 32224, 44221 ],
-        "coachID" : 8765
-      }
-    ]
-
     examples['application/json'] = [];
 
-    for (const group of db){
+    for (const group of groups_db){
       if (
         price_min <= group.price
         && group.price <= price_max
@@ -174,13 +174,14 @@ exports.findAvailableGroups = function(price_min,price_max,level,sortBy) {
     }
 
     if (sortBy !== undefined){
+      var sorting_func = undefined;
       if (sortBy === "price_asc"){
-        var sorting_func = function(a, b){return a.price - b.price};
+        sorting_func = function(a, b){return a.price - b.price};
       }
       else if (sortBy === "price_desc") {
-        var sorting_func = function(a, b){return b.price - a.price};
+        sorting_func = function(a, b){return b.price - a.price};
       } else if (sortBy === "availableSeats_desc"){
-        var sorting_func = function(a, b){return b.availableSeats - a.availableSeats};
+        sorting_func = function(a, b){return b.availableSeats - a.availableSeats};
       }
       else{
         reject();

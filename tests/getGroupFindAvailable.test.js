@@ -6,6 +6,16 @@ const got = require('got');
 const { findAvailableGroups } = require('../service/GroupService.js');
 const app = require('../index.js');
 
+const {
+    test_level, 
+    test_price, 
+    test_sorting_price_asc, 
+    test_sorting_price_desc,
+    test_sorting_available_seats_desc,
+    test_complex_combo, 
+    test_no_queries,
+}  = require('./test_logic/test_getGroupFindAvailable.js');
+
 test.before(async (t) => {
     t.context.server = http.createServer(app);
     t.context.prefixUrl = await listen(t.context.server);
@@ -16,12 +26,8 @@ test.after.always((t) => {
     t.context.server.close();
 });
 
-test('test to pass', (t)=> {
-    t.pass();
-});
 
 // ---------------- Test by function ---------------------
-
 test('GET group/findAvailable level by function', async (t) => {
     const price_min = undefined
     const price_max = undefined
@@ -46,6 +52,7 @@ test('GET group/findAvailable price by function', async (t) => {
 
     test_price(t, result, price_min, price_max) // Test logic for price
 });
+
 
 test('GET group/findAvailable sorting price_asc by function', async (t) => {
     const price_min = undefined
@@ -118,6 +125,7 @@ test('GET group/findAvailable invalid level by function', async (t) => {
     const level = "Noob"
     const sortBy = undefined
 
+    // Test that an error does get thrown
     let err = false
     try{
         const result = await findAvailableGroups(price_min,price_max,level,sortBy);
@@ -129,6 +137,7 @@ test('GET group/findAvailable invalid level by function', async (t) => {
 
     t.true(err)
 })
+
 
 test('GET group/findAvailable invalid sortBy by function', async (t) => {
     const price_min = undefined
@@ -136,6 +145,7 @@ test('GET group/findAvailable invalid sortBy by function', async (t) => {
     const level = undefined
     const sortBy = "popularity"
 
+    // Test that an error does get thrown
     let err = false
     try{
         const result = await findAvailableGroups(price_min,price_max,level,sortBy);
@@ -148,9 +158,7 @@ test('GET group/findAvailable invalid sortBy by function', async (t) => {
     t.true(err)
 })
 
-
 // ---------------- Test by endpoint ---------------------
-
 test('GET group/findAvailable level', async (t) => {
     const level = "Intermediate"
     const { body, statusCode } = await t.context.got.get(`group/findAvailable?level=${level}`);
@@ -172,6 +180,7 @@ test('GET group/findAvailable price', async (t) => {
 
     test_price(t, body, price_min, price_max) // Test logic for price
 });
+
 
 test('GET group/findAvailable sorting price asc', async (t) => {
     const sorting_filter = 'price_asc'
@@ -223,10 +232,6 @@ test('GET group/findAvailable complex combo', async (t) => {
 
 
 test('GET group/findAvailable no queries', async (t) => {
-    const price_min = 6
-    const price_max = 20
-    const level = "Intermediate"
-    const sorting_filter = 'price_desc'
     const { body, statusCode } = await t.context.got.get(
         `group/findAvailable`
     );
@@ -243,383 +248,5 @@ test('GET group/findAvailable Bad Request', async (t) => {
     const res = await t.throwsAsync(() => t.context.got.get(
         `group/findAvailable?price_min=${price_min}`
     ));
-    t.is(res.message, "Response code 400 (Bad Request)")
+    t.is(res.message, "Response code 400 (Bad Request)") // Test that we do get a 400 response code
 });
-
-
-// ----------------Functions that implement the logic of the tests--------------------
-
-function test_level(t, result_body, input_level){
-    // Check that all the returned groups have the right level
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('level'));
-        t.is(group.level, input_level)
-    } 
-    
-    // Database specific test, to test that all the qualified groups are returned  
-    t.deepEqual(
-        result_body,
-        [
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 5,
-                "availableSeats" : 5,
-                "ID" : 2,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 10.5,
-                "availableSeats" : 4,
-                "ID" : 3,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 20,
-                "availableSeats" : 5,
-                "ID" : 4,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-        ]
-    )
-}
-
-
-function test_price(t, result_body, input_price_min, input_price_max){
-    // Check that all the returned groups have a price between the range [price_min, price_max]
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('price'));
-        t.true(input_price_min <= group.price <= input_price_max)
-    } 
-    
-    // Database specific test, to test that all the qualified groups are returned
-    t.deepEqual(
-        result_body,
-        [
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 10.5,
-                "availableSeats" : 4,
-                "ID" : 3,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Beginner",
-                "price" : 7,
-                "availableSeats" : 1,
-                "ID" : 5,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-        ]
-    )
-}
-
-
-function test_sorting_price_asc(t, result_body){
-    // Check that all the returned groups are sorted in ascending price order
-    cur_value = -1
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('price'));
-        t.true(group.price >= cur_value)
-        cur_value = group.price
-    }
-
-    // Database specific test, to test that all the qualified groups are returned
-    t.deepEqual(
-        result_body,
-        [
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 5,
-                "availableSeats" : 5,
-                "ID" : 2,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Beginner",
-                "price" : 7,
-                "availableSeats" : 1,
-                "ID" : 5,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 10.5,
-                "availableSeats" : 4,
-                "ID" : 3,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Advanced",
-                "price" : 12,
-                "availableSeats" : 2,
-                "ID" : 1,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 20,
-                "availableSeats" : 5,
-                "ID" : 4,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-        ]
-    )
-}
-
-
-function test_sorting_price_desc(t, result_body){
-    // Check that all the returned groups are sorted in descending price order 
-    cur_value = Infinity
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('price'));
-        t.true(group.price <= cur_value)
-        cur_value = group.price
-    }
-
-    // Database specific test, to test that all the qualified groups are returned
-    t.deepEqual(
-        result_body,
-        [
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 20,
-                "availableSeats" : 5,
-                "ID" : 4,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Advanced",
-                "price" : 12,
-                "availableSeats" : 2,
-                "ID" : 1,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 10.5,
-                "availableSeats" : 4,
-                "ID" : 3,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Beginner",
-                "price" : 7,
-                "availableSeats" : 1,
-                "ID" : 5,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 5,
-                "availableSeats" : 5,
-                "ID" : 2,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-        ]
-    )
-}
-
-
-function test_sorting_available_seats_desc(t, result_body){
-    // Check that all the returned groups are sorted in descending availableSeats order 
-    cur_value = Infinity
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('availableSeats'));
-        t.true(group.availableSeats <= cur_value)
-        cur_value = group.price
-    }
-
-    // Database specific test, to test that all the qualified groups are returned
-    t.deepEqual(
-        result_body, 
-        [
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 5,
-                "availableSeats" : 5,
-                "ID" : 2,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 20,
-                "availableSeats" : 5,
-                "ID" : 4,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 10.5,
-                "availableSeats" : 4,
-                "ID" : 3,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Advanced",
-                "price" : 12,
-                "availableSeats" : 2,
-                "ID" : 1,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Beginner",
-                "price" : 7,
-                "availableSeats" : 1,
-                "ID" : 5,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-        ]
-    )
-}
-
-
-function test_complex_combo(t, result_body, input_level, input_price_min, input_price_max){
-    // We assume sortBy = 'price_desc'
-
-    // Check that all the returned groups have the right level
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('level'));
-        t.is(group.level, input_level)
-    } 
-    // Check that all the returned groups have a price between the range [price_min, price_max]
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('price'));
-        t.true(input_price_min <= group.price <= input_price_max)
-    } 
-    // Check that all the returned groups are sorted in descending price order 
-    cur_value = Infinity
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('price'));
-        t.true(group.price <= cur_value)
-        cur_value = group.price
-    }
-
-    // Database specific test, to test that all the qualified groups are returned
-    t.deepEqual(
-        result_body, 
-        [
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 20,
-                "availableSeats" : 5,
-                "ID" : 4,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 10.5,
-                "availableSeats" : 4,
-                "ID" : 3,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-        ]
-    )
-}
-
-
-function test_no_queries(t, result_body){
-    // Check that all the returned groups have the attributes that are used for filtering
-    for (const group of result_body){
-        t.true(group.hasOwnProperty('price'));
-        t.true(group.hasOwnProperty('level'));
-        t.true(group.hasOwnProperty('availableSeats'));
-    }
-
-    // Database specific test, to test that all the qualified groups are returned
-    t.deepEqual(
-        result_body, 
-        [
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Advanced",
-                "price" : 12,
-                "availableSeats" : 2,
-                "ID" : 1,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 5,
-                "availableSeats" : 5,
-                "ID" : 2,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 10.5,
-                "availableSeats" : 4,
-                "ID" : 3,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Intermediate",
-                "price" : 20,
-                "availableSeats" : 5,
-                "ID" : 4,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            },
-            {
-                "schedule" : "5 O'clock every Monday",
-                "level" : "Beginner",
-                "price" : 7,
-                "availableSeats" : 1,
-                "ID" : 5,
-                "studentIDs" : [ 198772, 32224, 44221 ],
-                "coachID" : 8765
-            }
-        ]
-    )
-}
