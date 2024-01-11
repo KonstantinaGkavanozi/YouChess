@@ -1,3 +1,6 @@
+// Creating the test for deleteGroup
+
+// Initiating the required parameters
 const http = require('http');
 const test = require('ava');
 const listen = require('test-listen');
@@ -16,10 +19,12 @@ test.after.always((t) => {
     t.context.server.close();
 });
 
+// Creating the test to pass
 test('test to pass', (t)=> {
     t.pass();
 });
 
+// Testing the delete group test by function
 test('Delete group by function', async (t) => {
     await deleteGroup(10);
     t.is(true, true);
@@ -32,6 +37,7 @@ test('Delete group', async (t) => {
     t.is(statusCode, 200);
 });
 
+// Testing the test with a bad request 
 test('Delete group Bad Request', async (t) => {
     const res = await t.throwsAsync(t.context.got.delete('group/abc'));
 
