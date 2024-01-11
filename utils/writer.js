@@ -1,3 +1,4 @@
+// Auto-Generated code from Swaggerhub
 var ResponsePayload = function(code, payload) {
   this.code = code;
   this.payload = payload;
